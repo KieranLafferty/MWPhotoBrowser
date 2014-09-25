@@ -7,7 +7,6 @@
 //
 
 #import "Menu.h"
-#import "SDImageCache.h"
 #import "MWCommon.h"
 
 @implementation Menu
@@ -18,10 +17,6 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     if ((self = [super initWithStyle:style])) {
 		self.title = @"MWPhotoBrowser";
-        
-        // Clear cache for testing
-        [[SDImageCache sharedImageCache] clearDisk];
-        [[SDImageCache sharedImageCache] clearMemory];
         
         _segmentedControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Push", @"Modal", nil]];
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0

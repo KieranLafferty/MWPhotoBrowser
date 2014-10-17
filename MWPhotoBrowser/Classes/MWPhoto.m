@@ -9,12 +9,12 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "AFImageRequestOperation.h"
+#import "AFHTTPRequestOperation.h"
 
 @interface MWPhoto () {
 
     BOOL _loadingInProgress;
-    AFImageRequestOperation *_imageRequestOperation;
+    AFHTTPRequestOperation *_imageRequestOperation;
 }
 
 - (void)imageLoadingComplete;
@@ -152,7 +152,7 @@
             // Load async from web (using SDWebImage)
             @try {
                 NSURLRequest *request = [NSURLRequest requestWithURL:_photoURL];
-                _imageRequestOperation = [[AFImageRequestOperation alloc] initWithRequest:request];
+                _imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
                 
                 __weak MWPhoto *weakself = self;
                 [_imageRequestOperation setDownloadProgressBlock:^(NSUInteger bytesRead,
@@ -167,9 +167,10 @@
                     }
                 }];
                 
-                [_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, UIImage *image) {
-                    weakself.underlyingImage = image;
-                    [weakself imageLoadingComplete];
+                [_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    UIImage *image = [UIImage imageWithData:responseObject];
+                                        weakself.underlyingImage = image;
+                                        [weakself imageLoadingComplete];
                 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                     if (error) {
                         MWLog(@"SDWebImage failed to download image: %@", error);
